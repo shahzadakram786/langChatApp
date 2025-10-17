@@ -1,0 +1,41 @@
+Create a fully functional Next.js web application (using JavaScript, not TypeScript) that serves as a language learning platform inspired by Omegle. The app should enable random video and text chats between users to practice and learn different languages by matching learners with compatible partners (e.g., one user's target language matches another's native language).
+Core Features:
+
+User Onboarding: A simple landing page with a "Start Chatting" button. Upon clicking, prompt users to select their native language (dropdown: English, Spanish, French, German, Mandarin, etc.—include at least 10 common languages) and target language to practice (same dropdown). Store this temporarily in localStorage or session.
+Random Matching: Use WebSockets (via Socket.io) to connect users in real-time. Implement a matching queue: When a user queues up, match them with another queued user where User A's target language == User B's native language (or vice versa for mutual practice). Display a "Finding a partner..." spinner. If no match in 30 seconds, show options to re-queue or change languages.
+Chat Interface: Once matched, load a full-screen chat room with:
+
+Video chat: Two-way video streams using WebRTC (integrate Peer.js for simplicity—handle signaling via Socket.io). Include mute/unmute buttons, video on/off toggles, and screen sharing option.
+Text chat: Real-time messaging sidebar (using Socket.io for broadcasting messages). Support emojis (via a simple picker) and language hints (e.g., auto-suggest translations using a lightweight library like i18next if needed, but keep it optional).
+Language info display: Show partner's native and target languages at the top.
+Controls: "End Chat" button (gracefully disconnects and returns to queue), "Report User" (sends anonymous report via API, logs to console for now), "Block User" (prevents future matches, store in localStorage).
+
+
+Post-Chat: After ending a chat, show a quick feedback modal (thumbs up/down on helpfulness) and option to queue again or exit.
+Global Elements: Responsive design for mobile/desktop. Include a footer with privacy note (e.g., "Chats are anonymous and temporary"). No user accounts—fully anonymous sessions.
+Error Handling: Graceful fallbacks for browser permissions (camera/mic), network issues (retry matching), and low compatibility (e.g., prompt to enable HTTPS for WebRTC).
+
+Tech Stack and Implementation Guidelines:
+
+Framework: Next.js 14+ (app router). Use JavaScript throughout—no TypeScript. Set up with create-next-app basics.
+Styling: Tailwind CSS for all layouts and utilities. Integrate Shadcn/UI for components like buttons, modals, dropdowns, spinners, and cards (e.g., use Button, DropdownMenu, Dialog, Tooltip from Shadcn).
+Real-Time Communication:
+
+Socket.io: Set up a Socket.io server in /api/socket (Next.js API route). Handle events: 'join-queue', 'match-found', 'send-message', 'end-chat', 'report'.
+Peer.js: For WebRTC peer-to-peer video/audio. Use a free STUN server (e.g., Google's public one) for NAT traversal.
+
+
+State Management: React's useState and useEffect for local state. UseContext for global app state (e.g., current match, languages).
+Dependencies: Install and use: socket.io-client, peerjs, @radix-ui/react-* (for Shadcn), tailwindcss, shadcn-ui (init with npx shadcn-ui@latest init). No additional heavy libs—keep bundle small.
+Structure:
+
+Pages: / (landing/onboarding), /chat/[roomId] (dynamic chat room, generated on match).
+Components: LanguageSelector, MatchingSpinner, VideoChat, TextChat, ChatControls.
+API Routes: /api/match (for initial queue), /api/socket (WebSocket handler).
+
+
+Deployment-Ready: Ensure it works on Vercel (serverless Socket.io compatible). Use environment variables for any keys (e.g., Peer.js config).
+Accessibility & Polish: ARIA labels on media controls. Dark mode support via Tailwind. Smooth animations with Framer Motion (install if needed for transitions).
+Testing Notes: Make it fully functional out-of-the-box—simulate multi-user testing by opening multiple tabs. Handle edge cases like one user leaving mid-chat.
+
+Generate the complete, production-ready code structure: Include all files (pages, components, utils, etc.), package.json dependencies, Tailwind/Shadcn config, and setup instructions. Output as a zipped project or folder structure with code snippets. Ensure it's secure (no persistent data) and performant (lazy-load video components).
