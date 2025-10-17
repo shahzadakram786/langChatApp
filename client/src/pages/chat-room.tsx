@@ -33,11 +33,24 @@ export default function ChatRoom() {
 
     const userId = localStorage.getItem("userId") || "";
 
-    // Register this connection for the room
-    sendMessage({
-      type: "register-room",
-      data: { roomId: matchData.roomId, userId },
-    });
+    // Wait for connection to be ready before registering
+    const registerRoom = () => {
+      sendMessage({
+        type: "register-room",
+        data: { roomId: matchData.roomId, userId },
+      });
+    };
+
+    // Register immediately if already connected, otherwise wait
+    if (ws.readyState === WebSocket.OPEN) {
+      registerRoom();
+    } else {
+      const handleOpen = () => {
+        registerRoom();
+        ws.removeEventListener("open", handleOpen);
+      };
+      ws.addEventListener("open", handleOpen);
+    }
 
     // Listen for messages
     const handleMessage = (event: MessageEvent) => {

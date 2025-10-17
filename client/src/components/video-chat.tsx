@@ -3,6 +3,7 @@ import { Mic, MicOff, Video, VideoOff, Monitor, MonitorOff } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { useWebSocket } from "@/lib/websocket-context";
 import Peer from "peerjs";
 
 interface VideoProps {
@@ -12,6 +13,7 @@ interface VideoProps {
 }
 
 export function VideoChat({ roomId, userId, partnerId }: VideoProps) {
+  const { ws, sendMessage } = useWebSocket();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
